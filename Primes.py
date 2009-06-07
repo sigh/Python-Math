@@ -35,7 +35,7 @@ class Primes(Singleton):
         return self
 
     def __contains__(self, n):
-        return self.is_prime(n)
+        return self._is_prime(n)
 
     def __getitem__(self, n):
         g = self._continue_iter()
@@ -67,8 +67,8 @@ class Primes(Singleton):
     Is prime
     """
 
-    def is_prime(self, n):
-        if n < primes._max_prime:
+    def _is_prime(self, n):
+        if n <= primes._max_prime:
             return (n in primes._lookup)
         if any( n%p == 0 for p in primes.SMALL_PRIMES ):
             return False
@@ -78,10 +78,10 @@ class Primes(Singleton):
         return miller_rabin_safe(n)
 
 
-    def next_prime(self, n):
+    def _next_prime(self, n):
         if n > self._max_prime:
             while 1:
-                if self.is_prime(n):
+                if self._is_prime(n):
                     return n
                 n += 1
         else:
@@ -157,8 +157,10 @@ primes = Primes()
 Is prime
 """
 
-is_prime = primes.is_prime
-next_prime = primes.next_prime
+def is_prime(p):
+    return p in primes
+
+next_prime = primes._next_prime
 
 """
 Miller Rabin
