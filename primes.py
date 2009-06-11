@@ -4,7 +4,7 @@ from itertools import chain, takewhile
 from math import sqrt
 from bisect import bisect_left
 
-from Singleton import Singleton
+from my.Singleton import Singleton
 
 class Primes(Singleton):
     SMALL_PRIME_LIMIT = 50
@@ -206,55 +206,4 @@ def _miller_rabin_test(n, base, s, t):
             return True
 
     return False
-
-"""
-Factors
-"""
-def factors(n):
-    if type(n) == dict:
-        pfs = n
-    else:
-        pfs = prime_factors(n)
-        
-    factors = [1]
-    
-    for (pf, count) in pfs.items():
-        powers = [pf**i for i in range(1, count+1)]
-        factors.extend([p*f for p in powers for f in factors])
-
-    return factors
-
-def prime_factors(n):
-    pf = {}
-    
-    for p in primes:
-        if p*p > n:
-            break
-
-        count = 0
-        while n%p == 0:
-            n /= p
-            count += 1
-            
-        if count:
-            pf[p] = count
-
-    if n > 1:
-        pf[n] = 1
-
-    return pf
-
-
-"""
-Totient
-"""
-
-def totient(n):
-    if type(n) == dict:
-        return reduce(mul, ((p-1)*p**(e-1) for (p,e) in n.items()))
-    else:
-        pfs = prime_factors(n)
-        for p in pfs:
-            n -= n/p
-        return n
 

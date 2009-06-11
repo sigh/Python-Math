@@ -1,3 +1,4 @@
+from __future__ import division
 from math import sqrt, floor
 
 def stern_bercot_constrained_gen(f=None, a=(0,1), b=(1,1)):
@@ -30,7 +31,7 @@ def farey_gen(n, start = (0,1), end=(1,1)):
     yield (c,d)
 
     while ((c,d) != end):
-        k = (n+b)/d
+        k = (n+b)//d
         e = k*c-a
         f = k*d-b
         a, b, c, d = c, d, e, f
@@ -42,7 +43,7 @@ def gcd(a, b):
     return a
     
 def lcm(a,b):
-    return a*b/gcd(a,b)
+    return a*b//gcd(a,b)
 
 def discrete_log(x, base, n):
     "Find y such that base**y = x (mod n)"

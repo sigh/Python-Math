@@ -1,3 +1,4 @@
+from __furture__ import division
 import operator
 
 def subset_gen(xs):
@@ -111,7 +112,7 @@ def nCr(n, r):
     a = 1
     b = 1
 
-    if r > n/2:
+    if r > n//2:
         r = n-r
     
     while r > 0:
@@ -120,4 +121,4 @@ def nCr(n, r):
         n -= 1
         r -= 1
 
-    return a/b
+    return a//b
