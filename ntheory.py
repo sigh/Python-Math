@@ -219,14 +219,16 @@ def pythagorean_triple_gen(f):
     """
     Find all (a,b,c) such that a**2 + b**2 = c**2
     where a,b > 0 and c > 2
+
+    Branches are constrained by the boolean function f(a,b,c)
     """
-    for x0,y0,z0 in generalised_pythagorean_triple_gen(f):
+    for x0,y0,z0 in generalised_ppt_gen(f):
         x,y,z = x0,y0,z0
         
-        while 1:
+        while f(x,y,z):
+
             yield (x,y,z)
             x += x0
             y += y0
             z += z0
 
-            if not f(x,y,z): break
