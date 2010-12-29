@@ -1,6 +1,6 @@
 from __future__ import division
 from operator import mul
-from my.primes import primes
+from primes import primes
 
 """
 Factors
