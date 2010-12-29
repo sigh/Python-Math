@@ -2,6 +2,10 @@ from __future__ import division
 from math import sqrt, floor
 
 def stern_bercot_constrained_gen(f=None, a=(0,1), b=(1,1)):
+    """Generates the rationals in reduced form
+    
+    a and b can be used to set the bounds of the stern-bercot tree
+    """
     stack = []
 
     if f == None:
@@ -18,9 +22,10 @@ def stern_bercot_constrained_gen(f=None, a=(0,1), b=(1,1)):
         else:
             return
 
-def farey_gen(n, start = (0,1), end=(1,1)):
-    """
-    generates the nth row of the farey sequence
+def farey_gen(n, start=(0,1), end=(1,1)):
+    """Generates the nth row of the farey sequence
+    
+    start and end can be used if only a part of the row is required.
     """
     
     a, b = start
@@ -38,15 +43,25 @@ def farey_gen(n, start = (0,1), end=(1,1)):
         yield (c,d)
 
 def gcd(a, b):
+    """Returns the greatest common divisor of a and b
+    
+    If a and b are positive, result is always positive.
+    Sign maybe positive or negative otherwise.
+    """
     while b:
         a, b = b, a%b
     return a
     
 def lcm(a,b):
+    """Returns the lowest common multiple of a and b
+    
+    If a and b are positive, result is always positive.
+    Sign maybe positive or negative otherwise.
+    """
     return a*b//gcd(a,b)
 
 def discrete_log(x, base, n):
-    "Find y such that base**y = x (mod n)"
+    """Find y such that base**y = x (mod n)"""
 
     x = x%n
     base = base%n
@@ -72,9 +87,12 @@ def discrete_log(x, base, n):
     return None
 
 def best_approximations(m, n):
-    """
-    Find the best approximations for m/n
-    assume 0 < m/n < 1
+    """ Find the best approximations for m/n
+
+    A best approximation is a rational a/b such that there does not exist
+    a rational c/d which is closer to m/n with d <= b
+
+    Assume 0 < m/n < 1
     """
 
     a, b = (0,1), (1,1)
@@ -94,11 +112,7 @@ def best_approximations(m, n):
             return    
 
 def extended_gcd(a, b):
-    """
-    return (r, s, d) where
-        a*r + b*s = d
-        d = gcd(a,b)
-    """
+    """Return (r, s, d) where a*r + b*s = d and d = gcd(a,b)"""
     x,y = 0, 1
     lastx, lasty = 1, 0
 
@@ -110,14 +124,16 @@ def extended_gcd(a, b):
     return (lastx, lasty, a)
 
 def modular_div(a, b, n):
-    "return a/d (mod n) assuming gcd(b,n) = 1"
+    """Return a/d (mod n) assuming gcd(b,n) = 1"""
     return (a*(extended_gcd(b, n)[0]))%n
 
 def fp_continued_fraction(x,eps=10**-3):
-    """
-    returns the finite continued fraction [a0; a1 a2 ... an]
-    of x in the form:
+    """Returns the finite continued fraction of the floating point number x
+    
+    The continued fraction [a0; a1 a2 ... an] of x is return in the form:
       (a0, [a1, a2, ..., an])
+
+    eps may be used to set the desired accuracy
     """
     a0 = floor(x)
     x -= a0
@@ -133,9 +149,9 @@ def fp_continued_fraction(x,eps=10**-3):
     return (int(a0), a_list)
 
 def rational_continued_fraction(p,q):
-    """
-    returns the finite continued fraction [a0; a1 a2 ... an]
-    of p/q in the form:
+    """Returns the finite continued fraction of p/q
+
+    The continued fraction [a0; a1 a2 ... an] of p/q is return in the form:
       (a0, [a1, a2, ..., an])
     """
     a0, rem = divmod(p,q)
@@ -149,9 +165,10 @@ def rational_continued_fraction(p,q):
     return (a0, a_list)
 
 def sqrt_continued_fraction(n):
-    """
-    returns the infinite repeating continued fraction
-    [a0; a1 a2 ... an a1 a2 ... ] of sqrt(n) in the form:
+    """Calculates the infinite continued fraction of sqrt(n)
+
+    The continued fraction [a0; a1 a2 ... an a1 a2 ... ] of sqrt(n) is
+    return in the form:
       (a0, [a1, a2, ..., an])
     """
     sqrt_n = sqrt(n)
@@ -178,8 +195,7 @@ def sqrt_continued_fraction(n):
             return (int_sqrt_n,a_list)
 
 def generalised_ppt_gen(f, init=None):
-    """
-    Solves for a**2 + b**2 = c**2 (Pythagorean triples)
+    """Generate primitive solutions to a**2 + b**2 = c**2
     
     Generate primitive pythagorean triples by the method given in
      http://mathworld.wolfram.com/PythagoreanTriple.html
@@ -216,7 +232,8 @@ def generalised_ppt_gen(f, init=None):
             return
 
 def pythagorean_triple_gen(f):
-    """
+    """Generates pythagorean triplets
+
     Find all (a,b,c) such that a**2 + b**2 = c**2
     where a,b > 0 and c > 2
 
