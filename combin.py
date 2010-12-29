@@ -1,4 +1,4 @@
-from __furture__ import division
+from __future__ import division
 import operator
 
 def subset_gen(xs):
