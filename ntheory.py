@@ -101,7 +101,6 @@ def best_approximations(m, n):
         c = a[0] + b[0] , a[1] + b[1]
 
         yield c
-        print c
         x, y = m*c[1], n*c[0]
         
         if x < y:
@@ -110,6 +109,30 @@ def best_approximations(m, n):
             a, b = c, b
         else:
             return    
+
+def fp_best_approximations(x, eps=10**-5):
+    """ Find the best approximations for floating point value x
+
+    A best approximation is a rational a/b such that there does not exist
+    a rational c/d which is closer to x with d <= b
+
+    Assume 0 < x < 1
+    """
+
+    a, b = (0,1), (1,1)
+
+    while 1:
+        c = a[0] + b[0] , a[1] + b[1]
+
+        yield c
+        y, z = x*c[1], c[0]
+
+        if abs(y-z) < eps:
+            return
+        elif y < z:
+            a, b = a, c
+        else:
+            a, b = c, b
 
 def extended_gcd(a, b):
     """Return (r, s, d) where a*r + b*s = d and d = gcd(a,b)"""
