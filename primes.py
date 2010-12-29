@@ -4,9 +4,10 @@ from itertools import chain, takewhile
 from math import sqrt
 from bisect import bisect_left
 
-from my.Singleton import Singleton
+class Primes(object):
+    """This class acts as an infinite prime list
+    """
 
-class Primes(Singleton):
     SMALL_PRIME_LIMIT = 50
     SMALL_PRIME_LIMIT_SQR = SMALL_PRIME_LIMIT**2
     
@@ -16,7 +17,10 @@ class Primes(Singleton):
     _INITIAL_PRIMES = [2, 3, 5, 7]
             
     def __new__(cls, *args, **kwargs):
-        self = Singleton.__new__(cls, *args, **kwargs)
+        # ensure primes is a singleton
+        if '_inst' not in vars(cls):
+            cls._inst = object.__new__(cls, *args, **kwargs)
+        self = cls._inst
 
         if '_primes' not in vars(self):
             self._primes = []
@@ -35,9 +39,11 @@ class Primes(Singleton):
         return self
 
     def __contains__(self, n):
+        """Test if n is a prime number"""
         return self._is_prime(n)
 
     def __getitem__(self, n):
+        """Return the nth prime"""
         g = self._continue_iter()
         
         while self._count <= n:
@@ -46,6 +52,7 @@ class Primes(Singleton):
         return self._primes[n]
         
     def __iter__(self):
+        """Return an iterator over all the primes"""
         return chain(iter(self._primes), self._continue_iter())
 
     """
@@ -61,6 +68,7 @@ class Primes(Singleton):
         return self._primes[start:end]
 
     def upto(self, limit):
+        """Return primes upto a given limit"""
         return takewhile(lambda x: x < limit+1, self)
 
     """
@@ -68,6 +76,7 @@ class Primes(Singleton):
     """
 
     def _is_prime(self, n):
+        """Test if n is a prime number"""
         if n <= primes._max_prime:
             return (n in primes._lookup)
         if any( n%p == 0 for p in primes.SMALL_PRIMES ):
@@ -79,6 +88,7 @@ class Primes(Singleton):
 
 
     def _next_prime(self, n):
+        """Return the smallest prime greater or equal to n"""
         if n > self._max_prime:
             while 1:
                 if self._is_prime(n):
@@ -94,6 +104,7 @@ class Primes(Singleton):
     # continue running the internal iterator
     # and processing the resulting primes
     def _continue_iter(self, upto = PRIME_LIMIT):
+        """Continue running the internal iterator"""
         for p in self._iter:
             if p >= upto:
                 return
@@ -105,6 +116,7 @@ class Primes(Singleton):
             yield p
 
     def _prime_gen(self, initial_primes):
+        """An infinite generator for prime numbers"""
         for p in initial_primes:
             yield p
         
@@ -131,12 +143,16 @@ class Primes(Singleton):
                 continue
             
     def _prime_wheel(self, initial_primes):
+        """Generate candidates to test for primality
+        
+        Generates an inifite list of numbers swhich aren't divisible by any 
+        of the given initial primes
+        """
+
         limit = reduce(mul, initial_primes)
 
         candidates = []
 
-        # find the candidate primes which aren't divisible by any of
-        # the given primes
         for n in range(2, limit+2):
             for p in initial_primes:
                 if n%p == 0:
@@ -153,11 +169,8 @@ class Primes(Singleton):
 
 primes = Primes()
 
-"""
-Is prime
-"""
-
 def is_prime(p):
+    """Tests if p is prime"""
     return p in primes
 
 next_prime = primes._next_prime
@@ -167,6 +180,10 @@ Miller Rabin
 """
 
 def miller_rabin_safe(n):
+    """Tests if n is prime using miller-rabin
+    
+    base values are predefined
+    """
     if n < 1373653:
          return miller_rabin(n,[2, 3])
     if n < 25326001:
@@ -183,6 +200,10 @@ def miller_rabin_safe(n):
         return miller_rabin( n, [2,3,5,7,11,13,19] )
 
 def miller_rabin(n, bases):
+    """Tests if n is prime using miller-rabin
+    
+    base values must be provided
+    """
     s = 0
     t = n-1
     while t & 1 == 0:
@@ -192,6 +213,7 @@ def miller_rabin(n, bases):
     return all(_miller_rabin_test(n,b, s, t) for b in bases)
 
 def _miller_rabin_test(n, base, s, t):
+    """Return True if n is probably prime"""
     if n < 2:
         return False
 
