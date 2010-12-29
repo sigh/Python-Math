@@ -2,8 +2,7 @@ from __furture__ import division
 import operator
 
 def subset_gen(xs):
-    """
-    Generates all subsets of xs
+    """ Generates all subsets of xs
     
     Note: The same list is used for each permutation, thus a copy
     should be made if persistence is required.
@@ -27,8 +26,7 @@ def subset_gen(xs):
     return generator(len(xs),[])
 
 def combination_gen(xs, k):
-    """
-    Generates all combinations of k items in xs
+    """ Generates all combinations of k items in xs
     
     Note: The same list is used for each permutation, thus a copy
     should be made if persistence is required.
@@ -62,8 +60,8 @@ def combination_gen(xs, k):
     return generator(len(xs),[0]*k,k)
 
 def permutation_gen(xs):
-    """
-    Generates all permutations of the elements in xs.
+    """ Generates all permutations of the elements in xs.
+
     Permutations are in lexographic order, assuming that
     xs is sorted initially.
     Each item in xs is treated as unique.
@@ -103,12 +101,18 @@ def permutation_gen(xs):
         yield xs
 
 def factorial(n):
+    """Returns n!
+    
+    n is truncated to an integer
+    values of n < 0 return 0.
+    """
     if n < 0:
         return 0
     
     return reduce(operator.mul, range(1,n+1), 1)
     
 def nCr(n, r):
+    """Return the number of ways of choosing r out of n items"""
     a = 1
     b = 1
 
