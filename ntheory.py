@@ -110,25 +110,27 @@ def best_approximations(m, n):
         else:
             return    
 
-def fp_best_approximations(x, eps=10**-5):
-    """ Find the best approximations for floating point value x
+def best_approximation(x, eps=10**-3):
+    """ Find the best approximation for floating point value x
 
     A best approximation is a rational a/b such that there does not exist
     a rational c/d which is closer to x with d <= b
 
-    Assume 0 < x < 1
+    Assume x > 0
     """
 
-    a, b = (0,1), (1,1)
+    # set up a to avoid iterating over integers
+    a = (max(int(x)-1,0),1)
+    # set up b to avoid iterating over 1/n values
+    b = (1,max(int(1/x)-1,0))
 
-    while 1:
+    while True:
         c = a[0] + b[0] , a[1] + b[1]
 
-        yield c
         y, z = x*c[1], c[0]
 
         if abs(y-z) < eps:
-            return
+            return c
         elif y < z:
             a, b = a, c
         else:
