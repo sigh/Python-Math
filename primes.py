@@ -84,7 +84,7 @@ class Primes(object):
         if n < primes.SMALL_PRIME_LIMIT_SQR:
             return True
         
-        return miller_rabin_safe(n)
+        return miller_rabin(n)
 
 
     def _next_prime(self, n):
@@ -179,31 +179,16 @@ next_prime = primes._next_prime
 Miller Rabin
 """
 
-def miller_rabin_safe(n):
+def miller_rabin(n, bases=None):
     """Tests if n is prime using miller-rabin
     
-    base values are predefined
+    Uses the given list of bases as witnesses. If no bases
+    are provided, a good set will be chosen
     """
-    if n < 1373653:
-         return miller_rabin(n,[2, 3])
-    if n < 25326001:
-        return miller_rabin( n, [2, 3, 5] )
-    if n < 2152302898747:
-        return miller_rabin( n, [2, 3, 5, 7, 11] )
-    if n < 3474749660383:
-        return miller_rabin( n, [2, 3, 5, 7, 11, 13] )
-    if n < 341550071728321:
-        return miller_rabin( n, [2, 3, 5, 7, 11, 13, 17] )
-    if n < 10000000000000000:
-        return miller_rabin( n, [2, 3, 7, 61, 24251] )
-    else:
-        return miller_rabin( n, [2,3,5,7,11,13,19] )
 
-def miller_rabin(n, bases):
-    """Tests if n is prime using miller-rabin
-    
-    base values must be provided
-    """
+    if bases == None:
+        bases = _miller_rabin_bases(n)
+
     s = 0
     t = n-1
     while t & 1 == 0:
@@ -229,3 +214,25 @@ def _miller_rabin_test(n, base, s, t):
 
     return False
 
+def _miller_rabin_bases(n):
+    """Choose default bases for miller-rabin
+    
+    These bases are sufficient to test for any number up to 341,550,071,728,321
+    http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
+    """
+    if n < 1373653:
+         return [2, 3]
+    if n < 9080191:
+         return [31, 73]
+    if n < 4759123141:
+        return [2, 7, 61]
+    if n < 2152302898747:
+        return [2, 3, 5, 7, 11]
+    if n < 3474749660383:
+        return [2, 3, 5, 7, 11, 13]
+    if n < 341550071728321:
+        return [2, 3, 5, 7, 11, 13, 17]
+    if n < 10000000000000000:
+        return [2, 3, 7, 61, 24251]
+    else:
+        return [2,3,5,7,11,13,19]
