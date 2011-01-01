@@ -77,13 +77,13 @@ class Primes(object):
 
     def _is_prime(self, n):
         """Test if n is a prime number"""
+
+        # if we've generated primes greater than n we can
+        # just check our lookup table
         if n <= primes._max_prime:
             return (n in primes._lookup)
-        if any( n%p == 0 for p in primes.SMALL_PRIMES ):
-            return False
-        if n < primes.SMALL_PRIME_LIMIT_SQR:
-            return True
         
+        # otherwise use miller-rabin
         return miller_rabin(n)
 
 
