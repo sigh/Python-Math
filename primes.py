@@ -9,7 +9,6 @@ class Primes(object):
     """
 
     SMALL_PRIME_LIMIT = 50
-    SMALL_PRIME_LIMIT_SQR = SMALL_PRIME_LIMIT**2
     
     _INITIAL_PRIMES = [2, 3, 5, 7]
             
@@ -30,8 +29,6 @@ class Primes(object):
             g = self._continue_iter()
             while g.next() < self.SMALL_PRIME_LIMIT:
                 pass
-            
-            self.SMALL_PRIMES = list(self._primes)
             
         return self
 
