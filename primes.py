@@ -11,9 +11,6 @@ class Primes(object):
     SMALL_PRIME_LIMIT = 50
     SMALL_PRIME_LIMIT_SQR = SMALL_PRIME_LIMIT**2
     
-    PRIME_LIMIT = 2147483647
-
-    _SQRT_LIMIT = int(sqrt(PRIME_LIMIT))
     _INITIAL_PRIMES = [2, 3, 5, 7]
             
     def __new__(cls, *args, **kwargs):
@@ -103,12 +100,9 @@ class Primes(object):
     
     # continue running the internal iterator
     # and processing the resulting primes
-    def _continue_iter(self, upto = PRIME_LIMIT):
+    def _continue_iter(self):
         """Continue running the internal iterator"""
         for p in self._iter:
-            if p >= upto:
-                return
-            
             self._primes.append(p)
             self._count += 1
             self._lookup[p] = self._count
@@ -117,30 +111,47 @@ class Primes(object):
 
     def _prime_gen(self, initial_primes):
         """An infinite generator for prime numbers"""
+
+        # first output the primes that the generator
+        # is seed with
         for p in initial_primes:
             yield p
         
-        def insert(p):
-            if p < self._SQRT_LIMIT:
-                heappush(heap, (p*p, 2*p))
-
         wheel = self._prime_wheel(initial_primes)
         
+        # This heap stores composite numbers. Items are of the form:
+        # (n,i)
+        # if i < 0 then i is the index of the prime p such that p*p = n
+        # if i > 0 then i is how much n should be incremented when
+        #          reinserting into the heap
         heap = []
-        c = wheel.next()
-        insert(c)
-        yield c
+
+        # output the first prime after the initial primes
+        p = wheel.next()
+        yield p
+        initial_index = len(initial_primes)
+        heappush(heap, (p*p, -initial_index))
         
         for c in wheel:
             n, i = heap[0]
             while n < c: 
-                heapreplace(heap, (n+i, i))
+                if i < 0:
+                    # reinsert in (n, increment) format
+                    p2 = 2*self._primes[-i]
+                    heapreplace(heap, (n+p2, p2))
+
+                    # increment the index
+                    i -= 1
+                    p = self._primes[-i]
+                    heappush(heap, (p*p, i))
+                else:
+                    # increment n
+                    heapreplace(heap, (n+i, i))
+
                 n, i = heap[0]
 
             if n > c:
-                insert(c)
                 yield c
-                continue
             
     def _prime_wheel(self, initial_primes):
         """Generate candidates to test for primality
