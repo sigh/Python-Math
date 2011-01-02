@@ -19,15 +19,10 @@ class Primes(object):
         self = cls._inst
 
         if '_primes' not in vars(self):
-            self._primes = []
-            self._lookup = {}
-            self._count = 0
-            self._max_prime = 1
-            self._iter = self._prime_gen(self._INITIAL_PRIMES)
+            self._iter = self._internal_iterator()
 
             # create initial list of primes
-            g = self._continue_iter()
-            while g.next() < self.SMALL_PRIME_LIMIT:
+            while self._iter.next() < self.SMALL_PRIME_LIMIT:
                 pass
             
         return self
@@ -38,22 +33,19 @@ class Primes(object):
 
     def __getitem__(self, n):
         """Return the nth prime"""
-        g = self._continue_iter()
         
         while self._count <= n:
-            g.next()
+            self._iter.next()
             
         return self._primes[n]
         
     def __iter__(self):
         """Return an iterator over all the primes"""
 
-        g = self._continue_iter()
-
         for n in count(): 
             if self._count == n:
                 # if count is EQUAL to n then we want the very next prime
-                yield g.next()
+                yield self._iter.next()
             else:
                 # if count is GREATER than n then we have already generated this prime
                 yield self._primes[n]
@@ -65,10 +57,8 @@ class Primes(object):
     """
 
     def __getslice__(self, start, end):
-        if self._count < end:
-            it = self._continue_iter()
-            while self._count < end:
-                it.next()
+        while self._count < end:
+            self._iter.next()
             
         return self._primes[start:end]
 
@@ -106,11 +96,21 @@ class Primes(object):
     Prime number generator
     """
     
-    # continue running the internal iterator
-    # and processing the resulting primes
-    def _continue_iter(self):
-        """Continue running the internal iterator"""
-        for p in self._iter:
+    def _internal_iterator(self):
+        """Generate and store primes
+        
+        Note: There should only be ONE of this iterator active per instance
+        """
+
+        if '_primes' in vars(self):
+            raise Exception("Primes._internal_iterator should only be called ONCE per instance")
+
+        self._primes = []
+        self._lookup = {}
+        self._count = 0
+        self._max_prime = 1
+
+        for p in self._prime_gen(self._INITIAL_PRIMES):
             self._primes.append(p)
             self._count += 1
             self._lookup[p] = self._count
@@ -120,23 +120,26 @@ class Primes(object):
     def _prime_gen(self, initial_primes):
         """An infinite generator for prime numbers"""
 
-        # first output the primes that the generator
-        # is seed with
+        # first output the primes that the generator is seeded with
         for p in initial_primes:
             yield p
         
         wheel = self._prime_wheel(initial_primes)
         
+        # output the first prime after the initial primes
+        p = wheel.next()
+        yield p
+
         # This heap stores composite numbers. Items are of the form:
         # (n,i)
         # if i < 0 then i is the index of the prime p such that p*p = n
         # if i > 0 then i is how much n should be incremented when
-        #          reinserting into the heap
+        #          reinserting into the heap.
+        #
+        # We could avoid the i < 0 case by inserting (p*p,2*p) for every prime
+        #   after the intial primes but that wastes a lot more space 
         heap = []
 
-        # output the first prime after the initial primes
-        p = wheel.next()
-        yield p
         initial_index = len(initial_primes)
         heappush(heap, (p*p, -initial_index))
         
@@ -145,10 +148,13 @@ class Primes(object):
             while n < c: 
                 if i < 0:
                     # reinsert in (n, increment) format
+                    # the incement is TWICE the prime since even multiple
+                    #   do not need to be checked
                     p2 = 2*self._primes[-i]
                     heapreplace(heap, (n+p2, p2))
 
-                    # increment the index
+                    # increment the index:
+                    #   insert (p*p, -index) for the next highest prime
                     i -= 1
                     p = self._primes[-i]
                     heappush(heap, (p*p, i))
