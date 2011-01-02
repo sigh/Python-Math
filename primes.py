@@ -199,7 +199,9 @@ def is_prime(p):
     """Tests if p is prime"""
     return p in primes
 
-next_prime = primes._next_prime
+def next_prime(n):
+    """Return the smallest prime greater or equal to n"""
+    return primes._next_prime(n)
 
 """
 Miller Rabin
