@@ -5,8 +5,7 @@ from math import sqrt
 from bisect import bisect_left
 
 class Primes(object):
-    """This class acts as an infinite prime list
-    """
+    """This class acts as an infinite prime list"""
 
     SMALL_PRIME_LIMIT = 50
     
@@ -16,14 +15,16 @@ class Primes(object):
         # ensure primes is a singleton
         if '_inst' not in vars(cls):
             cls._inst = object.__new__(cls, *args, **kwargs)
+        else:
+            return cls._inst
+
         self = cls._inst
 
-        if '_primes' not in vars(self):
-            self._iter = self._internal_iterator()
+        self._iter = self._internal_iterator()
 
-            # create initial list of primes
-            while self._iter.next() < self.SMALL_PRIME_LIMIT:
-                pass
+        # create initial list of primes
+        while self._iter.next() < self.SMALL_PRIME_LIMIT:
+            pass
             
         return self
 
@@ -85,7 +86,7 @@ class Primes(object):
     def _next_prime(self, n):
         """Return the smallest prime greater or equal to n"""
         if n > self._max_prime:
-            while 1:
+            while True:
                 if self._is_prime(n):
                     return n
                 n += 1
@@ -187,7 +188,7 @@ class Primes(object):
 
         num_candidates = len(candidates)
 
-        while 1:
+        while True:
             for i in range(num_candidates):
                 yield candidates[i]
                 candidates[i] += limit
