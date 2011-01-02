@@ -1,0 +1,14 @@
+Some python math functions. Most of these were created while I was working through Project Euler.
+
+primes.py contains an infinite prime list
+    Can do everything you would expect from an infinite list:
+    - retieve primes by index
+    - slice the list
+    - iterate over the list
+    - test if the list contains a given value
+
+factors.py does factoriation and can calculate other properties related to the factorisation of a number
+
+combin.py can count and generate subsets, combinations and permutations
+
+ntheory.py has some miscellaneous number theory functions
