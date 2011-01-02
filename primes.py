@@ -1,6 +1,6 @@
 from operator import mul
 from heapq import heappush, heapreplace
-from itertools import chain, takewhile
+from itertools import chain, takewhile, count
 from math import sqrt
 from bisect import bisect_left
 
@@ -47,7 +47,18 @@ class Primes(object):
         
     def __iter__(self):
         """Return an iterator over all the primes"""
-        return chain(iter(self._primes), self._continue_iter())
+
+        g = self._continue_iter()
+
+        for n in count(): 
+            if self._count == n:
+                # if count is EQUAL to n then we want the very next prime
+                yield g.next()
+            else:
+                # if count is GREATER than n then we have already generated this prime
+                yield self._primes[n]
+            # count can never be LESS than n (because we must have generated all primes
+            # up to the nth prime already)
 
     """
     Range
