@@ -5,14 +5,32 @@ from math import sqrt
 from bisect import bisect_left
 
 class Primes(object):
-    """This class acts as an infinite prime list"""
+    """Infinite prime list (singleton)
+
+    Can do everything you would expect from an infinite list:
+    - retieve primes by index
+    - slice the list
+    - iterate over the list
+    - test if the list contains a given value
+    
+    >>> 5 in primes
+    True
+    >>> 51 in primes
+    False
+    >>> primes[99] # 100th prime
+    541
+    >>> primes[5:10]
+    [13, 17, 19, 23, 29]
+    >>> list(primes.upto(50))
+    [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+    """
 
     SMALL_PRIME_LIMIT = 50
     
     _INITIAL_PRIMES = [2, 3, 5, 7]
             
     def __new__(cls, *args, **kwargs):
-        # ensure primes is a singleton
+        # ensure this class is a singleton
         if '_inst' not in vars(cls):
             cls._inst = object.__new__(cls, *args, **kwargs)
         else:
@@ -179,6 +197,8 @@ class Primes(object):
 
         candidates = []
 
+        # find all values 2 < c <= limit+1 such that c is not divisible
+        #   by any of the initial primes
         for n in range(2, limit+2):
             for p in initial_primes:
                 if n%p == 0:
@@ -188,6 +208,10 @@ class Primes(object):
 
         num_candidates = len(candidates)
 
+        # for each c yield all values of c+limit*n
+        #   this values will be guarenteed to contain
+        #   all primes except for the initial_primes
+        # (of course, many composite numbers will be included as well)
         while True:
             for i in range(num_candidates):
                 yield candidates[i]
