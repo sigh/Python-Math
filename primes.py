@@ -8,7 +8,7 @@ class Primes(object):
     """Infinite prime list (singleton)
 
     Can do everything you would expect from an infinite list:
-    - retieve primes by index
+    - retrieve primes by index
     - slice the list
     - iterate over the list
     - test if the list contains a given value
@@ -47,7 +47,7 @@ class Primes(object):
         return self._is_prime(n)
 
     def __getitem__(self, n):
-        """Return the nth prime"""
+        """Return the (n+1)th prime"""
         
         while self._count <= n:
             self._iter.next()
@@ -185,7 +185,7 @@ class Primes(object):
     def _prime_wheel(self, initial_primes):
         """Generate candidates to test for primality
         
-        Generates an inifite list of numbers swhich aren't divisible by any 
+        Generates an infinite list of numbers swhich aren't divisible by any 
         of the given initial primes
         """
 
