@@ -232,9 +232,9 @@ def miller_rabin(n, bases=None):
     
     Uses the given list of bases as witnesses. If no bases
     are provided, a good set will be chosen
+
+    Note: only use for n > 3
     """
-    if n < 2:
-        return False
 
     if bases == None:
         bases = _miller_rabin_bases(n)
