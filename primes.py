@@ -233,6 +233,8 @@ def miller_rabin(n, bases=None):
     Uses the given list of bases as witnesses. If no bases
     are provided, a good set will be chosen
     """
+    if n < 2:
+        return False
 
     if bases == None:
         bases = _miller_rabin_bases(n)
@@ -247,8 +249,6 @@ def miller_rabin(n, bases=None):
 
 def _miller_rabin_test(n, base, s, t):
     """Return True if n is probably prime"""
-    if n < 2:
-        return False
 
     b = pow(base, t, n)
     
