@@ -33,18 +33,14 @@ class Primes(object):
         # ensure this class is a singleton
         if '_inst' not in vars(cls):
             cls._inst = object.__new__(cls, *args, **kwargs)
-        else:
-            return cls._inst
+        return cls._inst
 
-        self = cls._inst
-
+    def __init__(self):
         self._iter = self._internal_iterator()
 
         # create initial list of primes
         while self._iter.next() < self.SMALL_PRIME_LIMIT:
             pass
-            
-        return self
 
     def __contains__(self, n):
         """Test if n is a prime number"""
