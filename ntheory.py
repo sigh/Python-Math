@@ -1,6 +1,19 @@
 from __future__ import division
 from math import sqrt, floor
 
+def rationals(a=(0,1)):
+    """Enumerates the rationals in constant space but not in a nice order.
+
+    This algorithm corresponds to a depth-first traversal of the
+    Calkin–Wilf tree.
+
+    See http://www.cs.ox.ac.uk/jeremy.gibbons/publications/rationals.pdf
+    """
+    while True:
+        x, y = divmod(*a)
+        a = (a[1], (a[1] * x) + (a[1] - y))
+        yield a
+
 def stern_bercot_constrained_gen(f=None, a=(0,1), b=(1,1)):
     """Generates the rationals in reduced form
 
