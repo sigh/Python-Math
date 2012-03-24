@@ -12,7 +12,7 @@ class Primes(object):
     - slice the list
     - iterate over the list
     - test if the list contains a given value
-    
+
     >>> 5 in primes
     True
     >>> 51 in primes
@@ -26,9 +26,9 @@ class Primes(object):
     """
 
     SMALL_PRIME_LIMIT = 50
-    
+
     _INITIAL_PRIMES = [2, 3, 5, 7]
-            
+
     def __new__(cls, *args, **kwargs):
         # ensure this class is a singleton
         if '_inst' not in vars(cls):
@@ -48,16 +48,16 @@ class Primes(object):
 
     def __getitem__(self, n):
         """Return the (n+1)th prime"""
-        
+
         while self._count <= n:
             self._iter.next()
-            
+
         return self._primes[n]
-        
+
     def __iter__(self):
         """Return an iterator over all the primes"""
 
-        for n in count(): 
+        for n in count():
             if self._count == n:
                 # if count is EQUAL to n then we want the very next prime
                 yield self._iter.next()
@@ -74,7 +74,7 @@ class Primes(object):
     def __getslice__(self, start, end):
         while self._count < end:
             self._iter.next()
-            
+
         return self._primes[start:end]
 
     def upto(self, limit):
@@ -92,7 +92,7 @@ class Primes(object):
         # just check our lookup table
         if n <= primes._max_prime:
             return (n in primes._lookup)
-        
+
         # otherwise use miller-rabin
         return miller_rabin(n)
 
@@ -110,10 +110,10 @@ class Primes(object):
     """
     Prime number generator
     """
-    
+
     def _internal_iterator(self):
         """Generate and store primes
-        
+
         Note: There should only be ONE of this iterator active per instance
         """
 
@@ -138,9 +138,9 @@ class Primes(object):
         # first output the primes that the generator is seeded with
         for p in initial_primes:
             yield p
-        
+
         wheel = self._prime_wheel(initial_primes)
-        
+
         # output the first prime after the initial primes
         p = wheel.next()
         yield p
@@ -152,15 +152,15 @@ class Primes(object):
         #          reinserting into the heap.
         #
         # We could avoid the i < 0 case by inserting (p*p,2*p) for every prime
-        #   after the intial primes but that wastes a lot more space 
+        #   after the intial primes but that wastes a lot more space
         heap = []
 
         initial_index = len(initial_primes)
         heappush(heap, (p*p, -initial_index))
-        
+
         for c in wheel:
             n, i = heap[0]
-            while n < c: 
+            while n < c:
                 if i < 0:
                     # reinsert in (n, increment) format
                     # the incement is TWICE the prime since even multiple
@@ -181,11 +181,11 @@ class Primes(object):
 
             if n > c:
                 yield c
-            
+
     def _prime_wheel(self, initial_primes):
         """Generate candidates to test for primality
-        
-        Generates an infinite list of numbers swhich aren't divisible by any 
+
+        Generates an infinite list of numbers swhich aren't divisible by any
         of the given initial primes
         """
 
@@ -229,7 +229,7 @@ Miller Rabin
 
 def miller_rabin(n, bases=None):
     """Tests if n is prime using miller-rabin
-    
+
     Uses the given list of bases as witnesses. If no bases
     are provided, a good set will be chosen
 
@@ -251,7 +251,7 @@ def _miller_rabin_test(n, base, s, t):
     """Return True if n is probably prime"""
 
     b = pow(base, t, n)
-    
+
     if b == 1 or b == n-1:
         return True
 
@@ -264,7 +264,7 @@ def _miller_rabin_test(n, base, s, t):
 
 def _miller_rabin_bases(n):
     """Choose default bases for miller-rabin
-    
+
     These bases are sufficient to test for any number up to 341,550,071,728,321
     http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
     """

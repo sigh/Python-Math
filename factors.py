@@ -13,11 +13,11 @@ def prime_factors(n):
     as keys and the count of each factor as the values
     """
     pf = {}
-    
+
     for p in primes:
         if p*p > n:
             break
-        
+
         if n%p == 0:
             count = 1
             n //= p
@@ -42,7 +42,7 @@ def factors(n):
     if type(n) != dict: n = prime_factors(n)
 
     factors = [1]
-    
+
     for (pf, count) in n.items():
         powers = [pf**i for i in range(1, count+1)]
         factors.extend([p*f for p in powers for f in factors])

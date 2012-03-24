@@ -3,7 +3,7 @@ import operator
 
 def subset_gen(xs):
     """ Generates all subsets of xs
-    
+
     Note: The same list is used for each permutation, thus a copy
     should be made if persistence is required.
     """
@@ -12,22 +12,22 @@ def subset_gen(xs):
             yield ys
         else:
             n -= 1
-            
+
             for res in generator(n, ys):
                 yield res
 
             ys.append(x[n])
-            
+
             for res in generator(n, ys):
                 yield res
 
             ys.pop()
-            
+
     return generator(len(xs),[])
 
 def combination_gen(xs, k):
     """ Generates all combinations of k items in xs
-    
+
     Note: The same list is used for each permutation, thus a copy
     should be made if persistence is required.
     """
@@ -55,7 +55,7 @@ def combination_gen(xs, k):
             # include current item
             for res in generator(n, ys, k):
                 yield res
-                
+
     k = max(min(k,len(xs)),0)
     return generator(len(xs),[0]*k,k)
 
@@ -65,16 +65,16 @@ def permutation_gen(xs):
     Permutations are in lexographic order, assuming that
     xs is sorted initially.
     Each item in xs is treated as unique.
-    
+
     Note: The same list is used for each permutation, thus a copy
     should be made if persistence is required.
     """
-    
+
     n = len(xs)
     index = range(-1, n)
 
     yield xs
-    
+
     while 1:
         k = n-1
         while index[k] > index[k+1]:
@@ -89,7 +89,7 @@ def permutation_gen(xs):
 
         index[k], index[j] = index[j], index[k]
         xs[k-1], xs[j-1] = xs[j-1], xs[k-1]
-        
+
         r = n
         s = k+1
         while r > s:
@@ -102,15 +102,15 @@ def permutation_gen(xs):
 
 def factorial(n):
     """Returns n!
-    
+
     n is truncated to an integer
     values of n < 0 return 0.
     """
     if n < 0:
         return 0
-    
+
     return reduce(operator.mul, range(1,n+1), 1)
-    
+
 def nCr(n, r):
     """Return the number of ways of choosing r out of n items"""
     a = 1
@@ -118,7 +118,7 @@ def nCr(n, r):
 
     if r > n//2:
         r = n-r
-    
+
     while r > 0:
         a *= n
         b *= r

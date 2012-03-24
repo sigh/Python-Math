@@ -3,14 +3,14 @@ from math import sqrt, floor
 
 def stern_bercot_constrained_gen(f=None, a=(0,1), b=(1,1)):
     """Generates the rationals in reduced form
-    
+
     a and b can be used to set the bounds of the stern-bercot tree
     """
     stack = []
 
     if f == None:
         f = lambda x: True
-    
+
     while True:
         c = a[0] + b[0] , a[1] + b[1]
         if f(*c):
@@ -24,14 +24,14 @@ def stern_bercot_constrained_gen(f=None, a=(0,1), b=(1,1)):
 
 def farey_gen(n, start=(0,1), end=(1,1)):
     """Generates the nth row of the farey sequence
-    
+
     start and end can be used if only a part of the row is required.
     """
-    
+
     a, b = start
     x, y = end
     c, d = 1, n
-    
+
     yield (a,b)
     yield (c,d)
 
@@ -44,17 +44,17 @@ def farey_gen(n, start=(0,1), end=(1,1)):
 
 def gcd(a, b):
     """Returns the greatest common divisor of a and b
-    
+
     If a and b are positive, result is always positive.
     Sign maybe positive or negative otherwise.
     """
     while b:
         a, b = b, a%b
     return a
-    
+
 def lcm(a,b):
     """Returns the lowest common multiple of a and b
-    
+
     If a and b are positive, result is always positive.
     Sign maybe positive or negative otherwise.
     """
@@ -65,7 +65,7 @@ def discrete_log(x, base, n):
 
     x = x%n
     base = base%n
-    
+
     m = int(sqrt(n))+1
 
     T = {}
@@ -102,13 +102,13 @@ def best_approximations(m, n):
 
         yield c
         x, y = m*c[1], n*c[0]
-        
+
         if x < y:
             a, b = a, c
         elif x > y:
             a, b = c, b
         else:
-            return    
+            return
 
 def best_approximation(x, eps=10**-3):
     """ Find the best approximation for floating point value x
@@ -154,7 +154,7 @@ def modular_div(a, b, n):
 
 def fp_continued_fraction(x,eps=10**-3):
     """Returns the finite continued fraction of the floating point number x
-    
+
     The continued fraction [a0; a1 a2 ... an] of x is return in the form:
       (a0, [a1, a2, ..., an])
 
@@ -169,8 +169,8 @@ def fp_continued_fraction(x,eps=10**-3):
         x = 1.0/x
         a = floor(x)
         x -= a
-        a_list.append(int(a))     
-        
+        a_list.append(int(a))
+
     return (int(a0), a_list)
 
 def rational_continued_fraction(p,q):
@@ -208,20 +208,20 @@ def sqrt_continued_fraction(n):
     remainder = init_remainder
     while 1:
         x,y = remainder
-        
+
         next_a = int(x/(sqrt_n-y))
         new_x = (n-y**2)/x
         new_y = -y + new_x*next_a
         remainder = (new_x, new_y)
 
         a_list.append(next_a)
-        
+
         if remainder == init_remainder:
             return (int_sqrt_n,a_list)
 
 def generalised_ppt_gen(f, init=None):
     """Generate primitive solutions to a**2 + b**2 = c**2
-    
+
     Generate primitive pythagorean triples by the method given in
      http://mathworld.wolfram.com/PythagoreanTriple.html
      references Roberts, J "Elementary Number Theory: A problem Oriented Approach" (1977)
@@ -242,13 +242,13 @@ def generalised_ppt_gen(f, init=None):
     while True:
         if f(a,b,c):
             yield (a,b,c)
-            
+
             a2, b2, c2, c3 = a*2, b*2, c*2, c*3
 
             stack.append((a+b2+c2,a2+b+c2,a2+b2+c3))
-            if a != b:            
+            if a != b:
                 stack.append((a-b2+c2,a2-b+c2,a2-b2+c3))
-            
+
             a,b,c = -a+b2+c2, -a2+b+c2, -a2+b2+c3
 
         elif stack:
@@ -266,11 +266,10 @@ def pythagorean_triple_gen(f):
     """
     for x0,y0,z0 in generalised_ppt_gen(f):
         x,y,z = x0,y0,z0
-        
+
         while f(x,y,z):
 
             yield (x,y,z)
             x += x0
             y += y0
             z += z0
-
