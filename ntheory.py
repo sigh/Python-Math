@@ -5,7 +5,7 @@ def rationals(a=(0,1)):
     """Enumerates the rationals in constant space but not in a nice order.
 
     This algorithm corresponds to a depth-first traversal of the
-    Calkin–Wilf tree.
+    Calkin-Wilf tree.
 
     See http://www.cs.ox.ac.uk/jeremy.gibbons/publications/rationals.pdf
     """
@@ -164,6 +164,32 @@ def extended_gcd(a, b):
 def modular_div(a, b, n):
     """Return a/d (mod n) assuming gcd(b,n) = 1"""
     return (a*(extended_gcd(b, n)[0]))%n
+
+def chinese_remainder_theorem(items):
+  """Solve the chinese remainder theorem
+
+  Given a list of items (a_i, n_i) solve for x such that x = a_i (mod n_i)
+  such that 0 <= x < product(n_i)
+
+  Assumes that n_i are pairwise co-prime.
+  """
+
+  # Determine N, the product of all n_i
+  N = 1
+  for a, n in items:
+    N *= n
+
+  # Find the solution (mod N)
+  result = 0
+  for a, n in items:
+    m = N//n
+    r, s, d = extended_gcd(n, m)
+    if d != 1:
+      raise "Input not pairwise co-prime"
+    result += a*s*m
+
+  # Make sure we return the canonical solution.
+  return result % N
 
 def fp_continued_fraction(x,eps=10**-3):
     """Returns the finite continued fraction of the floating point number x
